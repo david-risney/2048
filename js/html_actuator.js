@@ -3,8 +3,21 @@ function HTMLActuator() {
   this.scoreContainer   = document.querySelector(".score-container");
   this.bestContainer    = document.querySelector(".best-container");
   this.messageContainer = document.querySelector(".game-message");
+  this.initializeTextForValue();
 
   this.score = 0;
+}
+
+HTMLActuator.prototype.serialize = function () {
+  return {
+    valueToTextMap: this.valueToTextMap
+  };
+}
+
+HTMLActuator.deserialize = function (serializedState) {
+  var htmlActuator = new HTMLActuator();
+  htmlActuator.valueToTextMap = serializedState.valueToTextMap;
+  return htmlActuator;
 }
 
 HTMLActuator.prototype.actuate = function (grid, metadata) {
@@ -30,6 +43,7 @@ HTMLActuator.prototype.actuate = function (grid, metadata) {
 };
 
 HTMLActuator.prototype.restart = function () {
+  this.initializeTextForValue();
   this.clearMessage();
 };
 
@@ -38,6 +52,44 @@ HTMLActuator.prototype.clearContainer = function (container) {
     container.removeChild(container.firstChild);
   }
 };
+
+HTMLActuator.prototype.initializeTextForValue = function () {
+    var ranges = [[0x1f680, 0x1f6c5], [0x1f600, 0x1f640], [0x1f645, 0x1f64f], [0x1F330, 0x1F335], [0x1f337, 0x1F37c]],
+        valueList = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048],
+        textList,
+        randomText = function () {
+            var maxValue = ranges.reduce(function (sum, range) { return sum + (range[1] - range[0]); }, 0),
+                randomValue = Math.floor(Math.random() * maxValue),
+                text;
+
+            for (rangeIdx = 0; !text && rangeIdx < ranges.length; ++rangeIdx) {
+                var range = ranges[rangeIdx];
+                if (range[1] + 1 - range[0] < randomValue) {
+                    randomValue -= (range[1] + 1 - range[0]);
+                }
+                else {
+                    text = document.createElement("div");
+                    text.innerHTML = "&#" + (range[0] + randomValue) + ";";
+                    text = text.innerText;
+                }
+            }
+            return text;
+        },
+        valueToText = function (value) {
+          return {
+            value: value,
+            text: randomText()
+          };
+        };
+
+  this.valueToTextMap = valueList.map(valueToText).reduce(function (map, current) {
+    map[current.value] = current.text; return map;
+  }, {});
+}
+
+HTMLActuator.prototype.getTextForValue = function(value) {
+  return this.valueToTextMap[value];
+}
 
 HTMLActuator.prototype.addTile = function (tile) {
   var self = this;
@@ -50,7 +102,7 @@ HTMLActuator.prototype.addTile = function (tile) {
   var classes = ["tile", "tile-" + tile.value, positionClass];
   this.applyClasses(element, classes);
 
-  element.textContent = tile.value;
+  element.textContent = this.getTextForValue(tile.value);
 
   if (tile.previousPosition) {
     // Make sure that the tile gets rendered in the previous position first

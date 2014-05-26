@@ -230,6 +230,7 @@ GameManager.prototype.positionsEqual = function (first, second) {
 GameManager.prototype.serialize = function () {
   return {
     grid: this.grid.serialize(),
+    actuator: this.actuator.serialize(),
     size: this.size,
     score: this.score,
     over: this.over,
@@ -240,6 +241,7 @@ GameManager.prototype.serialize = function () {
 GameManager.deserialize = function (serializedGameManagerState, InputManager, Actuator, Scorer) {
   var gameManager = new GameManager(serializedGameManagerState.size, InputManager, Actuator, Scorer);
   gameManager.grid = Grid.deserialize(serializedGameManagerState.grid);
+  gameManager.actuator = HTMLActuator.deserialize(serializedGameManagerState.actuator);
   gameManager.score = serializedGameManagerState.score;
   gameManager.over = serializedGameManagerState.over;
   gameManager.won = serializedGameManagerState.won;

@@ -3,8 +3,12 @@
 
 $field-width: 500px;
 $grid-spacing: 15px;
+$grid-spacing-small: 5px;
 $grid-row-cells: 4;
+$grid-row-cells-small: 11;
 $tile-size: ($field-width - $grid-spacing * ($grid-row-cells + 1)) / $grid-row-cells;
+$tile-size-small: ($field-width - $grid-spacing-small * ($grid-row-cells-small + 1)) / $grid-row-cells-small;
+$field-height-small: $tile-size-small + $grid-spacing-small * 2;
 $tile-border-radius: 3px;
 
 $text-color: #776E65;
@@ -166,6 +170,11 @@ hr {
   line-height: 42px;
 }
 
+.game-container.game-container-short {
+	height: $field-height-small;
+	padding: $grid-spacing-small;
+}
+
 // Game field mixin used to render CSS at different width
 @mixin game-field {
   .game-container {
@@ -254,6 +263,11 @@ hr {
       clear: both;
     }
   }
+  .grid-cell.grid-cell-small {
+    margin-right: $grid-spacing-small;
+	height: $tile-size-small;
+	width: $tile-size-small;
+}
 
   .grid-cell {
     width: $tile-size;
@@ -439,9 +453,18 @@ hr {
   // Redefine variables for smaller screens
   $field-width: 280px;
   $grid-spacing: 10px;
+  $grid-spacing-small: 4px;
   $grid-row-cells: 4;
+  $grid-row-cells-small: 11;
   $tile-size: ($field-width - $grid-spacing * ($grid-row-cells + 1)) / $grid-row-cells;
+  $tile-size-small: ($field-width - $tile-border-radius - $grid-spacing-small * ($grid-row-cells-small + 1)) / $grid-row-cells-small;
   $tile-border-radius: 3px;
+  $field-height-small: $tile-size-small + $grid-spacing-small * 2;
+
+  .game-container.game-container-short {
+	height: $field-height-small;
+	padding: $grid-spacing-small;
+  }
 
   html, body {
     font-size: 15px;

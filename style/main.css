@@ -137,6 +137,10 @@ hr {
 
   100% {
     opacity: 1; } }
+.game-container.game-container-short {
+  height: 50px;
+  padding: 5px; }
+
 .game-container {
   margin-top: 40px;
   position: relative;
@@ -207,6 +211,11 @@ hr {
     content: "";
     display: block;
     clear: both; }
+
+.grid-cell.grid-cell-small {
+  margin-right: 5px;
+  height: 40px;
+  width: 40px; }
 
 .grid-cell {
   width: 106.25px;
@@ -468,6 +477,10 @@ hr {
   margin-top: 50px; }
 
 @media screen and (max-width: 480px) {
+  .game-container.game-container-short {
+    height: 28.81818px;
+    padding: 4px; }
+
   html, body {
     font-size: 15px; }
 
@@ -561,6 +574,11 @@ hr {
       content: "";
       display: block;
       clear: both; }
+
+  .grid-cell.grid-cell-small {
+    margin-right: 4px;
+    height: 20.81818px;
+    width: 20.81818px; }
 
   .grid-cell {
     width: 57.5px;
