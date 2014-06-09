@@ -43,6 +43,7 @@ HTMLActuator.prototype.actuate = function (grid, metadata) {
 };
 
 HTMLActuator.prototype.restart = function () {
+  this.clearSummary();
   this.initializeTextForValue();
   this.clearMessage();
 };
@@ -51,6 +52,7 @@ HTMLActuator.prototype.clearContainer = function (container) {
   while (container.firstChild) {
     container.removeChild(container.firstChild);
   }
+
 };
 
 HTMLActuator.prototype.initializeTextForValue = function () {
@@ -91,6 +93,36 @@ HTMLActuator.prototype.getTextForValue = function(value) {
   return this.valueToTextMap[value];
 }
 
+HTMLActuator.prototype.clearSummary = function() {
+  var cells,
+    idx;
+  cells = document.querySelectorAll("#game-piece-summary .grid-cell-small");
+  for (idx = 0; idx < cells.length - 1; ++idx) {
+    if (!cells[idx].textContent.trim()) {
+      cells[idx].textContent = "";
+    }
+  }
+  delete this.maxSummary;
+}
+
+HTMLActuator.prototype.fillSummary = function(value, text) {
+  var cells,
+    idx;
+  if (!this.maxSummary) {
+    this.maxSummary = 1; // Start at 1 to skip unused 1 value.
+  }
+  if (value > this.maxSummary) {
+    this.maxSummary = value;
+	cells = document.querySelectorAll("#game-piece-summary .grid-cell-small");
+	for (idx = 0; idx < cells.length - 1; ++idx) {
+      if (!cells[idx].textContent.trim()) {
+        cells[idx].textContent = text;
+        break;
+	  }
+	}
+  }
+}
+
 HTMLActuator.prototype.addTile = function (tile) {
   var self = this;
 
@@ -103,6 +135,7 @@ HTMLActuator.prototype.addTile = function (tile) {
   this.applyClasses(element, classes);
 
   element.textContent = this.getTextForValue(tile.value);
+  this.fillSummary(tile.value, element.textContent);
 
   if (tile.previousPosition) {
     // Make sure that the tile gets rendered in the previous position first
